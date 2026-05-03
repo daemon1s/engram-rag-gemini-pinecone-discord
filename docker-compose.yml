@@ -1,0 +1,23 @@
+services:
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: db_engram
+      POSTGRES_USER: engram_user
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-engram_password}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  engram_bot:
+    build: .
+    env_file: .env
+    depends_on:
+      - postgres
+    restart: always
+
+volumes:
+  postgres_data:

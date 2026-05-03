@@ -1,0 +1,11 @@
+.env
+secondbrain.pdf
+context.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+bot/events/
+scratch/

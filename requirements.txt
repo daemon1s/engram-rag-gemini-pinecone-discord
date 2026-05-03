@@ -1,0 +1,5 @@
+discord.py
+asyncpg
+pinecone
+google-genai
+python-dotenv
