@@ -8,7 +8,10 @@ async def setup_create_command(tree: app_commands.CommandTree):
     
     async def execute_create(interaction: discord.Interaction, contenido: str, nota_id: int = None):
         tag = interaction.channel.name
-        
+        if not contenido or len(contenido) > 10000:
+            msg = await interaction.followup.send("La nota es demasiado larga (máx 10,000 caracteres) o está vacía.", wait=True)
+            return await msg.delete(delay=30)
+
         try:
             if not nota_id:
                 nota_data = await create_note(contenido, tag, str(interaction.id))

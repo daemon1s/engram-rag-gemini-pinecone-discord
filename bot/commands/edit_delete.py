@@ -14,6 +14,10 @@ async def setup_edit_delete_commands(tree: app_commands.CommandTree):
     async def edit(interaction: discord.Interaction, id: int, nuevo_contenido: str):
         await interaction.response.defer()
         
+        if not nuevo_contenido or len(nuevo_contenido) > 10000:
+            msg = await interaction.followup.send("El contenido es demasiado largo (máx 10,000 caracteres) o está vacío.", wait=True)
+            return await msg.delete(delay=30)
+
         try:
             res = await update_note(id, nuevo_contenido)
             if not res:
