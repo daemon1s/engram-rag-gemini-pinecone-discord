@@ -26,8 +26,6 @@ class engramBot(commands.Bot):
         
         await self.tree.sync()
         print(f"Comandos sincronizados para {self.user}")
-        
-        await DBConnection.execute_migration('db/migrations/01_init.sql')
 
     async def on_ready(self):
         print(f"Conectado como {self.user} (ID: {self.user.id})")
