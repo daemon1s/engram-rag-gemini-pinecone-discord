@@ -19,5 +19,14 @@ services:
       - postgres
     restart: always
 
+  dashboard:
+    build: ./dashboard
+    ports:
+      - "3001:3000" # Mapeamos 3001 del VPS al 3000 interno de Next.js
+    env_file: .env
+    depends_on:
+      - postgres
+    restart: always
+
 volumes:
   postgres_data:
