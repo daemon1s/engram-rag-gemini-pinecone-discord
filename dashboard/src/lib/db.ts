@@ -1,4 +1,4 @@
-import { Pool } from 'pg';
+import { Pool, QueryResultRow } from 'pg';
 
 const pool = new Pool({
   host: process.env.DB_HOST,
@@ -10,5 +10,5 @@ const pool = new Pool({
 });
 
 export const db = {
-  query: (text: string, params?: any[]) => pool.query(text, params),
+  query: <T extends QueryResultRow = any>(text: string, params?: any[]) => pool.query<T>(text, params),
 };

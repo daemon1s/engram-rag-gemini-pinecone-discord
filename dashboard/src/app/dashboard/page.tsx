@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { BackgroundEffects } from "@/components/background-effects";
 import { NoteCard } from "@/components/note-card";
 import { DashboardControls } from "@/components/dashboard-controls";
+import { Note } from "@/types/note";
 
 export const dynamic = 'force-dynamic';
 
@@ -35,7 +36,7 @@ export default async function DashboardPage({
 
   sql += sort === "newest" ? " ORDER BY created_at DESC" : " ORDER BY created_at ASC";
 
-  const { rows: notes } = await db.query(sql, params);
+  const { rows: notes } = await db.query<Note>(sql, params);
   const { rows: tagRows } = await db.query("SELECT DISTINCT tag FROM notas ORDER BY tag ASC");
   const allTags = tagRows.map(r => r.tag);
 

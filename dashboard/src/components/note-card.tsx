@@ -3,8 +3,9 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { deleteNote, updateNote } from "@/lib/note-actions";
+import { Note } from "@/types/note";
 
-export function NoteCard({ note }: { note: any }) {
+export function NoteCard({ note }: { note: Note }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(note.contenido);
