@@ -4,12 +4,14 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { BackgroundEffects } from "@/components/background-effects";
+import { NeuralNetwork } from "@/components/neural-network";
 import { loginWithDiscord } from "@/lib/actions";
 
 export default function LoginPage() {
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#020617]">
       <BackgroundEffects />
+      <NeuralNetwork />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -17,14 +19,6 @@ export default function LoginPage() {
         transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 w-full max-w-[440px] px-6"
       >
-        <div
-          className="absolute -inset-2 rounded-[2.5rem] opacity-30"
-          style={{
-            background: 'linear-gradient(135deg, rgba(96, 165, 250, 0.3) 0%, rgba(59, 130, 246, 0.1) 50%, rgba(96, 165, 250, 0.3) 100%)',
-            filter: 'blur(30px)',
-            animation: 'glow-pulse 6s ease-in-out infinite',
-          }}
-        />
 
         <div
           className="relative overflow-hidden rounded-[2rem] border border-blue-500/30 bg-[#0a0a0a] backdrop-blur-2xl"
@@ -51,7 +45,7 @@ export default function LoginPage() {
               </div>
               <div className="text-center">
                 <h1 className="bg-gradient-to-b from-white to-white/50 bg-clip-text text-6xl font-extrabold tracking-tighter text-transparent" style={{ fontFamily: 'var(--font-bricolage)' }}>ENGRAM</h1>
-                <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.4em] text-blue-400/60">Knowledge OS</p>
+                <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.4em] text-blue-400/60">NEURAL EXTENSION</p>
               </div>
             </div>
 

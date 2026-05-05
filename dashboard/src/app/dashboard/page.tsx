@@ -5,6 +5,7 @@ import { BackgroundEffects } from "@/components/background-effects";
 import { NoteCard } from "@/components/note-card";
 import { DashboardControls } from "@/components/dashboard-controls";
 import { Note } from "@/types/note";
+import { NeuralNetwork } from "@/components/neural-network";
 
 export const dynamic = 'force-dynamic';
 
@@ -43,6 +44,7 @@ export default async function DashboardPage({
   return (
     <main className="relative min-h-screen w-full bg-[#020617] text-white selection:bg-blue-500/30">
       <BackgroundEffects />
+      <NeuralNetwork />
       
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <header className="mb-12 flex flex-col items-center">

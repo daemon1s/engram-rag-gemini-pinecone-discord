@@ -4,12 +4,16 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { deleteNote, updateNote } from "@/lib/note-actions";
 import { Note } from "@/types/note";
+import ReactMarkdown from "react-markdown";
+import { AnimatePresence } from "framer-motion";
+import { X, Maximize2 } from "lucide-react";
 
 export function NoteCard({ note }: { note: Note }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(note.contenido);
   const [tag, setTag] = useState(note.tag);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleDelete = async () => {
     if (!confirm("¿Seguro que quieres borrar esta nota?")) return;
@@ -27,7 +31,7 @@ export function NoteCard({ note }: { note: Note }) {
       layout
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: isDeleting ? 0 : 1, scale: isDeleting ? 0.9 : 1 }}
-      className="group relative flex flex-col overflow-hidden rounded-xl bg-[#0a0a0a]/95 border border-blue-500/20 p-6 transition-all duration-500 hover:border-blue-400/40 hover:shadow-[0_0_40px_rgba(59,130,246,0.1)]"
+      className="group relative flex flex-col overflow-hidden rounded-xl bg-[#0a0a0a] border border-blue-500/20 p-6 transition-all duration-500 hover:border-blue-400/40 hover:shadow-[0_0_40px_rgba(59,130,246,0.1)]"
     >
       <div className="absolute top-0 left-0 h-4 w-4 border-l-[1px] border-t-[1px] border-blue-400/40 transition-all duration-500 group-hover:h-6 group-hover:w-6 group-hover:border-blue-400" />
       <div className="absolute top-0 right-0 h-4 w-4 border-r-[1px] border-t-[1px] border-blue-400/40 transition-all duration-500 group-hover:h-6 group-hover:w-6 group-hover:border-blue-400" />
@@ -64,24 +68,75 @@ export function NoteCard({ note }: { note: Note }) {
             className="w-full min-h-[100px] bg-white/5 rounded-xl p-4 text-[13px] leading-relaxed text-slate-300 outline-none border border-blue-500/20 focus:border-blue-500/50 transition-all"
           />
         ) : (
-          <p className="text-[13px] leading-relaxed text-slate-400 transition-colors group-hover:text-slate-200">
-            {note.contenido}
-          </p>
+          <div className="relative !bg-transparent !shadow-none !border-none">
+            <div className="markdown-content !bg-transparent text-slate-300 transition-colors group-hover:text-slate-100 max-h-[180px] overflow-hidden">
+              <ReactMarkdown>{note.contenido}</ReactMarkdown>
+              {note.contenido.length > 200 && (
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a0a0a] to-transparent pointer-events-none" />
+              )}
+            </div>
+            {note.contenido.length > 200 && (
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                className="relative z-10 mt-4 flex items-center gap-2 rounded-lg border border-blue-500/30 bg-blue-500/5 px-3 py-1.5 text-[10px] font-bold text-blue-400 transition-all hover:bg-blue-500/20 hover:text-blue-300 uppercase tracking-widest"
+              >
+                <Maximize2 size={12} /> Leer nota completa
+              </button>
+            )}
+          </div>
         )}
       </div>
 
-      <div className="flex justify-between items-center opacity-0 transition-opacity group-hover:opacity-100">
-        <div className="h-px flex-1 bg-gradient-to-r from-blue-500/20 to-transparent" />
-        <div className="flex gap-4 ml-4">
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative flex w-full max-w-3xl max-h-[85vh] flex-col overflow-hidden rounded-[2rem] border border-blue-500/30 bg-[#0a0a0a] shadow-2xl"
+            >
+              <div className="flex shrink-0 items-center justify-between border-b border-white/5 px-8 py-6">
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] font-black tracking-widest text-blue-400">#{note.id}</span>
+                  <span className="text-[11px] font-black uppercase tracking-widest text-white/90">{note.tag}</span>
+                </div>
+                <button 
+                  onClick={() => setIsModalOpen(false)}
+                  className="rounded-full bg-white/5 p-2 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-8 sm:p-12 scrollbar-thin scrollbar-thumb-blue-500/20 scrollbar-track-transparent">
+                <div className="markdown-content prose-invert">
+                  <ReactMarkdown>{note.contenido}</ReactMarkdown>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex items-center justify-between opacity-0 transition-all duration-300 group-hover:opacity-100">
+        <div className="h-px flex-1 bg-gradient-to-r from-blue-500/30 to-transparent" />
+        <div className="ml-4 flex gap-6">
           {isEditing ? (
             <>
-              <button onClick={handleSave} className="text-[10px] font-bold text-green-400 hover:text-green-300 uppercase tracking-widest">Guardar</button>
-              <button onClick={() => setIsEditing(false)} className="text-[10px] font-bold text-slate-500 hover:text-slate-400 uppercase tracking-widest">Cancelar</button>
+              <button onClick={handleSave} className="text-[10px] font-black tracking-widest text-green-400 hover:text-green-300 uppercase">Guardar</button>
+              <button onClick={() => setIsEditing(false)} className="text-[10px] font-black tracking-widest text-slate-500 hover:text-slate-400 uppercase">Cancelar</button>
             </>
           ) : (
             <>
-              <button onClick={() => setIsEditing(true)} className="text-[10px] font-bold text-blue-400/60 hover:text-blue-400 uppercase tracking-widest transition-colors">Editar</button>
-              <button onClick={handleDelete} className="text-[10px] font-bold text-red-400/60 hover:text-red-400 uppercase tracking-widest transition-colors">Borrar</button>
+              <button onClick={() => setIsEditing(true)} className="relative z-10 text-[10px] font-black tracking-widest text-blue-400 hover:text-blue-300 uppercase transition-colors">Editar</button>
+              <button onClick={handleDelete} className="relative z-10 text-[10px] font-black tracking-widest text-red-500/80 hover:text-red-400 uppercase transition-colors">Borrar</button>
             </>
           )}
         </div>

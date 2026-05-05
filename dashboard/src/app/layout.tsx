@@ -25,8 +25,11 @@ const bricolage = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "Engram Dashboard",
-  description: "Personal knowledge management system powered by RAG.",
+  title: "engram dashboard",
+  description: "Neural extension for personal knowledge management, powered by RAG.",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

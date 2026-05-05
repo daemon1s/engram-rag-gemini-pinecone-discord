@@ -2,6 +2,7 @@ import discord
 from discord import app_commands
 from core.notes import create_note
 from core.embeddings import process_and_upload_note
+from bot.ui.note_modal import NoteModal
 from bot.ui.retry_view import RetryView
 
 async def setup_create_command(tree: app_commands.CommandTree):
@@ -45,7 +46,6 @@ async def setup_create_command(tree: app_commands.CommandTree):
             await error_msg.delete(delay=30)
 
     @tree.command(name="create", description="Crea una nueva nota (Sticky Note)")
-    @app_commands.describe(contenido="El texto de la nota")
-    async def create(interaction: discord.Interaction, contenido: str):
-        await interaction.response.defer()
-        await execute_create(interaction, contenido)
+    async def create(interaction: discord.Interaction):
+        modal = NoteModal(execute_create)
+        await interaction.response.send_modal(modal)

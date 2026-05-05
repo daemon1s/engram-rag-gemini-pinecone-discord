@@ -168,3 +168,11 @@ body {
   animation: grain 8s steps(10) infinite;
   z-index: 50;
 }
+.markdown-content { font-size: 0.85rem; line-height: 1.6; }
+.markdown-content h1 { font-size: 1.25rem; font-weight: 800; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #60a5fa; border-bottom: 1px solid rgba(59, 130, 246, 0.2); padding-bottom: 0.25rem; }
+.markdown-content h2 { font-size: 1.1rem; font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.5rem; color: #93c5fd; }
+.markdown-content p { margin-bottom: 1rem; color: rgba(248, 250, 252, 0.8); }
+.markdown-content strong { color: #f8fafc; font-weight: 700; }
+.markdown-content ul, .markdown-content ol { margin-bottom: 1rem; padding-left: 1.5rem; }
+.markdown-content ul { list-style-type: disc; }
+.markdown-content li { margin-bottom: 0.5rem; }
