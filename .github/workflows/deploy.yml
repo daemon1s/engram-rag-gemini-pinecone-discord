@@ -56,7 +56,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             # Ir a la carpeta del proyecto
-            cd ~/engram 
+            cd ~/engram-rag-gemini-pinecone-discord
             
             # Actualizar archivos de configuración (docker-compose, etc)
             git fetch --all
