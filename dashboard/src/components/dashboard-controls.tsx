@@ -54,16 +54,14 @@ export function DashboardControls({ tags }: { tags: string[] }) {
         <div className="flex items-center gap-4 px-2">
           <button
             onClick={() => setSort(sort === 'newest' ? 'oldest' : 'newest')}
-            className={`transition-all duration-300 ${sort === 'newest' ? 'text-blue-400' : 'text-white/20 hover:text-blue-400/80'} hover:scale-110 active:scale-95`}
-            title="Ordenar por fecha"
+            className="group relative flex items-center gap-2 rounded-xl bg-white/5 px-4 py-2 text-blue-400 transition-all hover:bg-blue-500/10 hover:scale-105 active:scale-95 border border-white/5 hover:border-blue-500/20"
+            title={sort === 'newest' ? "Ver más antiguas" : "Ver más recientes"}
           >
-            <Clock className="h-5 w-5" />
-          </button>
-          <button
-            className="text-white/20 hover:text-blue-400/80 transition-all duration-300 hover:scale-110 active:scale-95"
-            title="Dirección de orden"
-          >
-            <ArrowUpDown className="h-5 w-5" />
+            <Clock className="h-4 w-4" />
+            <span className="text-[10px] font-bold uppercase tracking-widest">
+              {sort === 'newest' ? 'Recientes' : 'Antiguas'}
+            </span>
+            <ArrowUpDown className={`ml-1 h-3 w-3 transition-transform duration-500 ${sort === 'oldest' ? 'rotate-180' : ''}`} />
           </button>
         </div>
       </div>
