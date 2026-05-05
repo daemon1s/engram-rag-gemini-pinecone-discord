@@ -1,5 +1,9 @@
 name: Build and Deploy engram
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [ main ]
@@ -53,19 +57,9 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Ir a la carpeta del proyecto
             cd ~/engram-rag-gemini-pinecone-discord
-            
-            # Actualizar archivos de configuración (docker-compose, etc)
             git fetch --all
             git reset --hard origin/main
-            
-            # Descargar imágenes nuevas
             docker compose pull
-            
-            # Reiniciar servicios con Healthcheck Check
-            # --wait asegura que el bot esté 'ready' antes de dar el OK
             docker compose up -d --wait
-            
-            # Limpiar imágenes huérfanas para ahorrar espacio
             docker image prune -f
