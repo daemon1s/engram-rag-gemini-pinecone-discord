@@ -1,7 +1,7 @@
 discord.py
 asyncpg
 pinecone
-google-generativeai
+google-genai
 pinecone-client
 python-dotenv
 aiohttp
