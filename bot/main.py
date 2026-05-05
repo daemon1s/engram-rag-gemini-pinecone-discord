@@ -19,6 +19,10 @@ class engramBot(commands.Bot):
         super().__init__(command_prefix="!", intents=intents)
 
     async def setup_hook(self):
+        # Crear señal de salud para Docker inmediatamente al arrancar
+        with open("/tmp/bot_ready", "w") as f:
+            f.write("ready")
+
         await setup_create_command(self.tree)
         await setup_query_command(self.tree)
         await setup_edit_delete_commands(self.tree)
@@ -28,10 +32,6 @@ class engramBot(commands.Bot):
         print(f"Comandos sincronizados para {self.user}")
 
     async def on_ready(self):
-        # Crear señal de salud para Docker
-        with open("/tmp/bot_ready", "w") as f:
-            f.write("ready")
-            
         print(f"Conectado como {self.user} (ID: {self.user.id})")
         print("------")
 
