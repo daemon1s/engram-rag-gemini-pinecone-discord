@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: db_engram
       POSTGRES_USER: engram_user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-k6Z3vR9pL2mN5qX8j4H1wT7Y}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-engram_password}
     ports:
       - "5432:5432"
     volumes:
@@ -18,11 +18,17 @@ services:
     depends_on:
       - postgres
     restart: always
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os; exit(0 if os.path.exists('/tmp/bot_ready') else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   dashboard:
     build: ./dashboard
     ports:
-      - "3001:3000" # Mapeamos 3001 del VPS al 3000 interno de Next.js
+      - "3001:3000"
     env_file: .env
     depends_on:
       - postgres

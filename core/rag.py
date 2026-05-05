@@ -12,14 +12,15 @@ async def answer_with_rag(query):
         return "No encontré notas relacionadas con tu pregunta."
 
     pool = await DBConnection.get_pool()
-    query_db = "SELECT contenido, tag FROM notas WHERE id = ANY($1::int[])"
+    query_db = "SELECT contenido, tag, created_at FROM notas WHERE id = ANY($1::int[])"
     
     async with pool.acquire() as conn:
         rows = await conn.fetch(query_db, nota_ids)
         
     context_parts = []
     for row in rows:
-        context_parts.append(f"[{row['tag']}]: {row['contenido']}")
+        fecha = row['created_at'].strftime('%Y-%m-%d %H:%M')
+        context_parts.append(f"[{row['tag']}] ({fecha}): {row['contenido']}")
     
     context_text = "\n---\n".join(context_parts)
     
