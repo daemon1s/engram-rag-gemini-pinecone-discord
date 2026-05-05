@@ -33,18 +33,38 @@ export async function updateNote(id: number, title: string, content: string, tag
   }
 
   try {
-    await db.query(
-      'UPDATE notas SET titulo = $1, contenido = $2, tag = $3 WHERE id = $4',
+    const res = await db.query(
+      'UPDATE notas SET titulo = $1, contenido = $2, tag = $3 WHERE id = $4 RETURNING discord_message_id',
       [title, content, tag.toUpperCase(), id]
     );
 
-    const inputText = `Título: ${title}\n\nContenido: ${content}`;
+    const msg_id = res.rows[0]?.discord_message_id;
+
+    const inputText = `Ttulo: ${title}\n\nContenido: ${content}`;
     const embedding = await getEmbedding(inputText);
 
     await upsertVector(id.toString(), embedding, {
       titulo: title,
       tag: tag.toUpperCase()
     });
+
+    if (msg_id) {
+      try {
+        await fetch('http://engram_bot:5000/update_note', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id,
+            titulo: title,
+            contenido: content,
+            discord_message_id: msg_id,
+            tag: tag.toLowerCase()
+          })
+        });
+      } catch (e) {
+        console.error("Bot sync failed:", e);
+      }
+    }
 
     revalidatePath('/dashboard');
     return { success: true };

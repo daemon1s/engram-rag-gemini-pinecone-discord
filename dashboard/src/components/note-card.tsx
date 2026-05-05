@@ -68,12 +68,12 @@ export function NoteCard({ note }: { note: Note }) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Título de la nota..."
-              className="w-full bg-white/5 rounded-lg px-4 py-2 text-[14px] font-bold text-white outline-none border border-blue-500/20 focus:border-blue-500/50"
+              className="w-full bg-white/5 rounded-lg px-4 py-2.5 text-[15px] font-black text-white outline-none border border-blue-500/20 focus:border-blue-500/50 transition-all"
             />
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full min-h-[100px] bg-white/5 rounded-xl p-4 text-[13px] leading-relaxed text-slate-300 outline-none border border-blue-500/20 focus:border-blue-500/50 transition-all"
+              className="w-full h-[280px] bg-white/5 rounded-xl p-4 text-[13px] leading-relaxed text-slate-300 outline-none border border-blue-500/20 focus:border-blue-500/50 transition-all resize-none scrollbar-thin scrollbar-thumb-blue-500/20 scrollbar-track-transparent"
             />
           </div>
         ) : (
@@ -151,8 +151,8 @@ export function NoteCard({ note }: { note: Note }) {
         <div className="ml-4 flex gap-6">
           {isEditing ? (
             <>
-              <button onClick={handleSave} className="text-[10px] font-black tracking-widest text-green-400 hover:text-green-300 uppercase">Guardar</button>
-              <button onClick={() => setIsEditing(false)} className="text-[10px] font-black tracking-widest text-slate-500 hover:text-slate-400 uppercase">Cancelar</button>
+              <button onClick={handleSave} className="relative z-10 text-[10px] font-black tracking-widest text-blue-400 hover:text-blue-300 uppercase transition-colors">Guardar</button>
+              <button onClick={() => setIsEditing(false)} className="relative z-10 text-[10px] font-black tracking-widest text-slate-500 hover:text-slate-400 uppercase transition-colors">Cancelar</button>
             </>
           ) : (
             <>

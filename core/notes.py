@@ -53,3 +53,10 @@ async def set_pinecone_id(nota_id, pinecone_id):
     query = "UPDATE notas SET pinecone_id = $1 WHERE id = $2;"
     async with pool.acquire() as conn:
         await conn.execute(query, pinecone_id, nota_id)
+
+async def get_note_by_id(nota_id):
+    pool = await DBConnection.get_pool()
+    query = "SELECT id, titulo, contenido, tag FROM notas WHERE id = $1;"
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(query, nota_id)
+        return dict(row) if row else None
