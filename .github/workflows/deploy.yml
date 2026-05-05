@@ -3,7 +3,6 @@ name: Build and Deploy engram
 on:
   push:
     branches: [ main ]
-    # Disparar solo si cambian archivos de lógica
     paths:
       - 'bot/**'
       - 'core/**'
@@ -14,7 +13,7 @@ on:
       - 'Dockerfile'
       - 'requirements.txt'
       - '.github/workflows/**'
-  workflow_dispatch: # Permite disparo manual
+  workflow_dispatch: 
 
 jobs:
   build-and-push:
@@ -29,7 +28,6 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build del Bot de Discord
       - name: Build and push Bot
         uses: docker/build-push-action@v5
         with:
@@ -37,7 +35,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USER }}/engram-bot:latest
 
-      # Build del Dashboard (Next.js)
       - name: Build and push Dashboard
         uses: docker/build-push-action@v5
         with:

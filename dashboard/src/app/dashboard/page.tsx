@@ -26,7 +26,7 @@ export default async function DashboardPage({
   const params: any[] = [];
 
   if (query) {
-    sql += " AND (contenido ILIKE $1 OR tag ILIKE $1)";
+    sql += " AND (titulo ILIKE $1 OR contenido ILIKE $1 OR tag ILIKE $1)";
     params.push(`%${query}%`);
   }
 

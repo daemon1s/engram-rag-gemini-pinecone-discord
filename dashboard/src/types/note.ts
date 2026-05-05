@@ -1,5 +1,6 @@
 export interface Note {
   id: number;
+  titulo: string;
   contenido: string;
   tag: string;
   created_at: string;

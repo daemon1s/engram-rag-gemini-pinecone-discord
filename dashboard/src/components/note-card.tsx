@@ -11,6 +11,7 @@ import { X, Maximize2 } from "lucide-react";
 export function NoteCard({ note }: { note: Note }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(note.titulo);
   const [content, setContent] = useState(note.contenido);
   const [tag, setTag] = useState(note.tag);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +24,7 @@ export function NoteCard({ note }: { note: Note }) {
 
   const handleSave = async () => {
     setIsEditing(false);
-    await updateNote(note.id, content, tag);
+    await updateNote(note.id, title, content, tag);
   };
 
   return (
@@ -62,13 +63,24 @@ export function NoteCard({ note }: { note: Note }) {
 
       <div className="relative mb-4 px-2">
         {isEditing ? (
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="w-full min-h-[100px] bg-white/5 rounded-xl p-4 text-[13px] leading-relaxed text-slate-300 outline-none border border-blue-500/20 focus:border-blue-500/50 transition-all"
-          />
+          <div className="flex flex-col gap-4">
+            <input
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Título de la nota..."
+              className="w-full bg-white/5 rounded-lg px-4 py-2 text-[14px] font-bold text-white outline-none border border-blue-500/20 focus:border-blue-500/50"
+            />
+            <textarea
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="w-full min-h-[100px] bg-white/5 rounded-xl p-4 text-[13px] leading-relaxed text-slate-300 outline-none border border-blue-500/20 focus:border-blue-500/50 transition-all"
+            />
+          </div>
         ) : (
           <div className="relative !bg-transparent !shadow-none !border-none">
+            <h3 className="mb-2 text-[15px] font-bold text-white group-hover:text-blue-400 transition-colors">
+              {note.titulo}
+            </h3>
             <div className="markdown-content !bg-transparent text-slate-300 transition-colors group-hover:text-slate-100 max-h-[180px] overflow-hidden">
               <ReactMarkdown>{note.contenido}</ReactMarkdown>
               {note.contenido.length > 200 && (
@@ -116,6 +128,7 @@ export function NoteCard({ note }: { note: Note }) {
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto p-8 sm:p-12 scrollbar-thin scrollbar-thumb-blue-500/20 scrollbar-track-transparent">
+                <h2 className="mb-6 text-3xl font-black tracking-tighter text-white">{note.titulo}</h2>
                 <div className="markdown-content prose-invert">
                   <ReactMarkdown>{note.contenido}</ReactMarkdown>
                 </div>

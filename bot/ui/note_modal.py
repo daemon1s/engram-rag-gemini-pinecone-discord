@@ -2,6 +2,12 @@ import discord
 from discord import ui
 
 class NoteModal(ui.Modal, title="Crear nueva nota"):
+    titulo = ui.TextInput(
+        label="Título de la nota",
+        placeholder="Un título descriptivo...",
+        min_length=3,
+        max_length=100
+    )
     contenido = ui.TextInput(
         label="Contenido de la nota",
         style=discord.TextStyle.long,
@@ -16,4 +22,4 @@ class NoteModal(ui.Modal, title="Crear nueva nota"):
 
     async def on_submit(self, interaction: discord.Interaction):
         await interaction.response.defer()
-        await self.callback_func(interaction, self.contenido.value)
+        await self.callback_func(interaction, self.titulo.value, self.contenido.value)

@@ -40,7 +40,7 @@ export default function LoginPage() {
 
           <div className="flex flex-col items-center gap-10 px-10 py-16">
             <div className="flex flex-col items-center gap-6">
-              <div className="relative h-24 w-24 overflow-hidden rounded-[1.5rem] border border-white/10 bg-black shadow-2xl">
+              <div className="relative h-24 w-24 overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#0a0a0a]">
                 <Image src="/logo.png" alt="Engram" fill className="object-cover" />
               </div>
               <div className="text-center">

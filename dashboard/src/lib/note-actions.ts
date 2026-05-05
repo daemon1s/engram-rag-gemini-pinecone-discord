@@ -22,7 +22,7 @@ export async function deleteNote(id: number) {
   }
 }
 
-export async function updateNote(id: number, content: string, tag: string) {
+export async function updateNote(id: number, title: string, content: string, tag: string) {
   const session = await auth();
   if (!session || session.user?.email !== process.env.ALLOWED_EMAIL) {
     throw new Error("Unauthorized");
@@ -34,13 +34,15 @@ export async function updateNote(id: number, content: string, tag: string) {
 
   try {
     await db.query(
-      'UPDATE notas SET contenido = $1, tag = $2 WHERE id = $3',
-      [content, tag.toUpperCase(), id]
+      'UPDATE notas SET titulo = $1, contenido = $2, tag = $3 WHERE id = $4',
+      [title, content, tag.toUpperCase(), id]
     );
 
-    const embedding = await getEmbedding(content);
+    const inputText = `Título: ${title}\n\nContenido: ${content}`;
+    const embedding = await getEmbedding(inputText);
 
     await upsertVector(id.toString(), embedding, {
+      titulo: title,
       tag: tag.toUpperCase()
     });
 

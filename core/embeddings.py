@@ -6,11 +6,13 @@ from core.notes import set_pinecone_id
 gemini = GeminiClient()
 pinecone = PineconeClient()
 
-async def process_and_upload_note(nota_id, contenido, tag, created_at=None):
-    vector = await gemini.get_embedding(contenido)
+async def process_and_upload_note(nota_id, titulo, contenido, tag, created_at=None):
+    input_text = f"Título: {titulo}\n\nContenido: {contenido}"
+    vector = await gemini.get_embedding(input_text)
     
     metadata = {
         "nota_id": nota_id,
+        "titulo": titulo,
         "tag": tag,
         "created_at": str(created_at) if created_at else str(datetime.now())
     }
