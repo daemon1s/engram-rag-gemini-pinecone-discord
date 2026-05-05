@@ -32,7 +32,7 @@ export function NoteCard({ note }: { note: Note }) {
       layout
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: isDeleting ? 0 : 1, scale: isDeleting ? 0.9 : 1 }}
-      className="group relative flex flex-col overflow-hidden rounded-xl bg-[#0a0a0a] border border-blue-500/20 p-6 transition-all duration-500 hover:border-blue-400/40 hover:shadow-[0_0_40px_rgba(59,130,246,0.1)]"
+      className="group relative flex h-[480px] flex-col overflow-hidden rounded-xl bg-[#0a0a0a] border border-blue-500/20 p-6 transition-all duration-500 hover:border-blue-400/40 hover:shadow-[0_0_40px_rgba(59,130,246,0.1)]"
     >
       <div className="absolute top-0 left-0 h-4 w-4 border-l-[1px] border-t-[1px] border-blue-400/40 transition-all duration-500 group-hover:h-6 group-hover:w-6 group-hover:border-blue-400" />
       <div className="absolute top-0 right-0 h-4 w-4 border-r-[1px] border-t-[1px] border-blue-400/40 transition-all duration-500 group-hover:h-6 group-hover:w-6 group-hover:border-blue-400" />
@@ -56,8 +56,8 @@ export function NoteCard({ note }: { note: Note }) {
             </span>
           )}
         </div>
-        <span className="text-[11px] font-bold tracking-tight text-white/40">
-          {new Date(note.created_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+        <span className="text-[13px] font-black tracking-tight text-white">
+          {new Date(note.created_at).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' })}
         </span>
       </div>
 
@@ -77,11 +77,14 @@ export function NoteCard({ note }: { note: Note }) {
             />
           </div>
         ) : (
-          <div className="relative !bg-transparent !shadow-none !border-none">
-            <h3 className="mb-2 text-[15px] font-bold text-white group-hover:text-blue-400 transition-colors">
+          <div className="relative flex-1 !bg-transparent !shadow-none !border-none overflow-hidden">
+            <h3 
+              className="mb-2 text-3xl font-black leading-[0.9] tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-50 to-blue-400 group-hover:via-blue-300 transition-all duration-700"
+              style={{ textShadow: '0 0 25px rgba(59,130,246,0.2), 0 0 50px rgba(59,130,246,0.1)' }}
+            >
               {note.titulo}
             </h3>
-            <div className="markdown-content !bg-transparent text-slate-300 transition-colors group-hover:text-slate-100 max-h-[180px] overflow-hidden">
+            <div className="markdown-content !bg-transparent text-slate-300 transition-colors group-hover:text-slate-100 max-h-[220px] overflow-hidden">
               <ReactMarkdown>{note.contenido}</ReactMarkdown>
               {note.contenido.length > 200 && (
                 <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0a0a0a] to-transparent pointer-events-none" />
@@ -128,7 +131,12 @@ export function NoteCard({ note }: { note: Note }) {
                 </button>
               </div>
               <div className="flex-1 overflow-y-auto p-8 sm:p-12 scrollbar-thin scrollbar-thumb-blue-500/20 scrollbar-track-transparent">
-                <h2 className="mb-6 text-3xl font-black tracking-tighter text-white">{note.titulo}</h2>
+                <h2 
+                  className="mb-6 text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-400"
+                  style={{ textShadow: '0 0 30px rgba(59,130,246,0.3)' }}
+                >
+                  {note.titulo}
+                </h2>
                 <div className="markdown-content prose-invert">
                   <ReactMarkdown>{note.contenido}</ReactMarkdown>
                 </div>

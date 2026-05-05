@@ -45,13 +45,13 @@ export default async function DashboardPage({
     <main className="relative min-h-screen w-full bg-[#020617] text-white selection:bg-blue-500/30">
       <BackgroundEffects />
       <NeuralNetwork />
-      
+
       <div className="relative z-10 mx-auto max-w-7xl px-6 py-12 lg:px-8">
         <header className="mb-12 flex flex-col items-center">
           <h1 className="mb-8 text-4xl font-black tracking-tighter sm:text-5xl">
             ENGRAM<span className="text-blue-500">.</span>
           </h1>
-          
+
           <DashboardControls tags={allTags} />
         </header>
 
