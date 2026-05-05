@@ -26,8 +26,14 @@ async def setup_create_command(tree: app_commands.CommandTree):
             
             await process_and_upload_note(nota_id, titulo, contenido, tag)
             
-            sticky_note = f"📌 **#{nota_id} | {titulo}**\n{contenido}"
-            await interaction.followup.send(sticky_note)
+            embed = discord.Embed(
+                title=f"📌 #{nota_id} | {titulo}",
+                description=contenido,
+                color=0x3B82F6
+            )
+            embed.set_footer(text=f"Categoría: {tag} • Ver en Dashboard")
+            
+            await interaction.followup.send(embed=embed)
             
         except Exception as e:
             friendly_message = (
