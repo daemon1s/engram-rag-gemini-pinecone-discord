@@ -8,7 +8,7 @@ load_dotenv()
 class GeminiClient:
     def __init__(self):
         self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-        self.text_model = 'gemini-3.1-flash-lite-preview'
+        self.text_model = 'gemini-3.1-flash-lite'
         self.embedding_model = 'gemini-embedding-2'
         self.max_retries = 6
         self.base_delay = 3
