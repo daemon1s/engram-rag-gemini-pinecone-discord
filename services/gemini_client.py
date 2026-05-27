@@ -41,7 +41,11 @@ class GeminiClient:
         return await self._retry_call(call)
 
     async def get_response(self, prompt, context=""):
-        full_prompt = f"Contexto:\n{context}\n\nPregunta: {prompt}"
+        full_prompt = (
+            f"Contexto:\n{context}\n\n"
+            f"Pregunta: {prompt}\n\n"
+            f"IMPORTANTE: Tu respuesta debe ser concisa, directa al grano y no debe exceder los 3500 caracteres."
+        )
         
         def call():
             response = self.client.models.generate_content(

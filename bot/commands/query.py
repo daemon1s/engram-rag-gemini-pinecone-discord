@@ -10,21 +10,14 @@ async def setup_query_command(tree: app_commands.CommandTree):
             respuesta = await answer_with_rag(pregunta)
             
             if len(respuesta) > 4000:
-                chunks = [respuesta[i:i+4000] for i in range(0, len(respuesta), 4000)]
-                for idx, chunk in enumerate(chunks):
-                    embed = discord.Embed(
-                        title=f"🔍 Consulta: {pregunta}" if idx == 0 else None,
-                        description=chunk,
-                        color=0x3B82F6
-                    )
-                    await interaction.followup.send(embed=embed)
-            else:
-                embed = discord.Embed(
-                    title=f"🔍 Consulta: {pregunta}",
-                    description=respuesta,
-                    color=0x3B82F6
-                )
-                await interaction.followup.send(embed=embed)
+                respuesta = respuesta[:3900] + "\n\n*(Respuesta truncada por límites de longitud)*"
+            
+            embed = discord.Embed(
+                title=f"🔍 Consulta: {pregunta}",
+                description=respuesta,
+                color=0x3B82F6
+            )
+            await interaction.followup.send(embed=embed)
             
         except Exception as e:
             friendly_message = (
