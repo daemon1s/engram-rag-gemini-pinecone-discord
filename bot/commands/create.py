@@ -1,6 +1,6 @@
 import discord
 from discord import app_commands
-from core.notes import create_note
+from core.notes import create_note, update_discord_message_id
 from core.embeddings import process_and_upload_note
 from bot.ui.note_modal import NoteModal
 from bot.ui.retry_view import RetryView
@@ -33,7 +33,8 @@ async def setup_create_command(tree: app_commands.CommandTree):
             )
             embed.set_footer(text=f"Categoría: {tag} • Ver en Dashboard")
             
-            await interaction.followup.send(embed=embed)
+            msg = await interaction.followup.send(embed=embed)
+            await update_discord_message_id(nota_id, str(msg.id))
             
         except Exception as e:
             friendly_message = (

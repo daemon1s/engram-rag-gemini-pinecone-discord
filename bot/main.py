@@ -65,10 +65,11 @@ class engramBot(commands.Bot):
             try:
                 msg = await channel.fetch_message(int(msg_id))
                 embed = discord.Embed(
-                    title=f"Y\"O #{nota_id} | {titulo}",
+                    title=f"📌 #{nota_id} | {titulo}",
                     description=contenido,
                     color=0x3B82F6
                 )
+                embed.set_footer(text=f"Categoría: {tag} • Ver en Dashboard")
                 await msg.edit(embed=embed)
                 return web.Response(text="Sync OK")
             except Exception as e:

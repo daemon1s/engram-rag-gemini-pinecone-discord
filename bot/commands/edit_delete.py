@@ -15,9 +15,27 @@ async def setup_edit_delete_commands(tree: app_commands.CommandTree):
             await update_note(nota_id, titulo, contenido)
             await process_and_upload_note(nota_id, titulo, contenido, tag)
             
+            nota = await get_note_by_id(nota_id)
+            msg_id = nota.get('discord_message_id') if nota else None
+            if msg_id:
+                try:
+                    guild = interaction.guild
+                    channel = discord.utils.get(guild.channels, name=tag)
+                    if channel:
+                        orig_msg = await channel.fetch_message(int(msg_id))
+                        new_embed = discord.Embed(
+                            title=f"📌 #{nota_id} | {titulo}",
+                            description=contenido,
+                            color=0x3B82F6
+                        )
+                        new_embed.set_footer(text=f"Categoría: {tag} • Ver en Dashboard")
+                        await orig_msg.edit(embed=new_embed)
+                except Exception as ex:
+                    print(f"Error actualizando el embed de Discord original: {ex}")
+
             embed = discord.Embed(
-                title=f"o. Nota #{nota_id} Actualizada",
-                description=f"**{titulo}**\n\nEl contenido y el vector semǭntico han sido actualizados.",
+                title=f"📌 Nota #{nota_id} Actualizada",
+                description=f"**{titulo}**\n\nEl contenido y el vector semántico han sido actualizados.",
                 color=0x3B82F6
             )
             msg = await interaction.followup.send(embed=embed, wait=True)
