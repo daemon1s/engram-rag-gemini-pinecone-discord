@@ -23,8 +23,12 @@ export function NoteCard({ note }: { note: Note }) {
   };
 
   const handleSave = async () => {
-    setIsEditing(false);
-    await updateNote(note.id, title, content, tag);
+    try {
+      await updateNote(note.id, title, content, tag);
+      setIsEditing(false);
+    } catch (error) {
+      alert("Error al guardar la nota: " + (error instanceof Error ? error.message : String(error)));
+    }
   };
 
   return (

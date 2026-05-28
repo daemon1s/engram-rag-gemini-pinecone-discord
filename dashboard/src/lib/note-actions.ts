@@ -39,32 +39,36 @@ export async function updateNote(id: number, title: string, content: string, tag
     );
 
     const msg_id = res.rows[0]?.discord_message_id;
+    const inputText = `Título: ${title}\n\nContenido: ${content}`;
 
-    const inputText = `Ttulo: ${title}\n\nContenido: ${content}`;
-    const embedding = await getEmbedding(inputText);
-
-    await upsertVector(id.toString(), embedding, {
-      titulo: title,
-      tag: tag.toUpperCase()
-    });
-
-    if (msg_id) {
-      try {
-        await fetch('http://engram_bot:5000/update_note', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            id,
-            titulo: title,
-            contenido: content,
-            discord_message_id: msg_id,
-            tag: tag.toLowerCase()
-          })
-        });
-      } catch (e) {
-        console.error("Bot sync failed:", e);
+    const syncDiscordPromise = msg_id ? fetch('http://engram_bot:5000/update_note', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id,
+        titulo: title,
+        contenido: content,
+        discord_message_id: msg_id,
+        tag: tag.toLowerCase()
+      })
+    }).then(async (response) => {
+      if (!response.ok) {
+        const text = await response.text();
+        console.error("Bot sync failed with status", response.status, text);
       }
-    }
+    }).catch(e => {
+      console.error("Bot sync connection failed:", e);
+    }) : Promise.resolve();
+
+    const syncPineconePromise = (async () => {
+      const embedding = await getEmbedding(inputText);
+      await upsertVector(id.toString(), embedding, {
+        titulo: title,
+        tag: tag.toUpperCase()
+      });
+    })();
+
+    await Promise.all([syncDiscordPromise, syncPineconePromise]);
 
     revalidatePath('/dashboard');
     return { success: true };
