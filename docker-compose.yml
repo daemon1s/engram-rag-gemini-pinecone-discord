@@ -35,6 +35,13 @@ services:
     depends_on:
       - postgres
     restart: always
+    networks:
+      - default
+      - proxy-network
+
+networks:
+  proxy-network:
+    external: true
 
 volumes:
   postgres_data:
