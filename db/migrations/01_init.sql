@@ -1,6 +1,7 @@
 -- Tabla principal de notas
 CREATE TABLE IF NOT EXISTS notas (
     id          SERIAL PRIMARY KEY,
+    titulo      VARCHAR(255) NOT NULL,
     contenido   TEXT NOT NULL,
     tag         VARCHAR(100),           -- nombre del canal de discord (ej: 'proyectos', 'reflexiones')
     created_at  TIMESTAMPTZ DEFAULT NOW(),
