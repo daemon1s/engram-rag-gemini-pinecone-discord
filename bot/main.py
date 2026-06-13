@@ -36,11 +36,38 @@ class engramBot(commands.Bot):
     async def start_web_server(self):
         app = web.Application()
         app.router.add_post('/update_note', self.handle_update_note)
+        app.router.add_post('/delete_note', self.handle_delete_note)
         runner = web.AppRunner(app)
         await runner.setup()
         site = web.TCPSite(runner, '0.0.0.0', 5000)
         await site.start()
         print(">> API de Sincronizacin Interna activa en puerto 5000")
+
+    async def handle_delete_note(self, request):
+        try:
+            data = await request.json()
+            msg_id = data.get('discord_message_id')
+            tag = data.get('tag')
+
+            if not msg_id or not tag:
+                return web.Response(text="No message reference", status=200)
+
+            guild = self.get_guild(int(os.getenv("DISCORD_GUILD_ID")))
+            if not guild:
+                return web.Response(text="Guild not found", status=500)
+
+            channel = discord.utils.get(guild.channels, name=tag)
+            if not channel:
+                return web.Response(text="Channel not found", status=404)
+
+            try:
+                msg = await channel.fetch_message(int(msg_id))
+                await msg.delete()
+                return web.Response(text="Sync OK")
+            except Exception as e:
+                return web.Response(text=f"Message not found or error: {str(e)}", status=200)
+        except Exception as e:
+            return web.Response(text=str(e), status=500)
 
     async def handle_update_note(self, request):
         try:

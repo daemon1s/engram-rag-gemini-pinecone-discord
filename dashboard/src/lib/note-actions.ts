@@ -13,8 +13,30 @@ export async function deleteNote(id: number) {
   }
 
   try {
-    await db.query('DELETE FROM notas WHERE id = $1', [id]);
-    await deleteVector(id.toString());
+    const res = await db.query('SELECT discord_message_id, tag FROM notas WHERE id = $1', [id]);
+    const row = res.rows[0];
+
+    const syncDiscordPromise = (row && row.discord_message_id && row.tag) ? fetch('http://engram_bot:5000/delete_note', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        discord_message_id: row.discord_message_id,
+        tag: row.tag.toLowerCase()
+      })
+    }).then(async (response) => {
+      if (!response.ok) {
+        const text = await response.text();
+        console.error("Bot delete sync failed with status", response.status, text);
+      }
+    }).catch(e => {
+      console.error("Bot delete sync connection failed:", e);
+    }) : Promise.resolve();
+
+    const deleteDbPromise = db.query('DELETE FROM notas WHERE id = $1', [id]);
+    const deletePineconePromise = deleteVector(id.toString());
+
+    await Promise.all([syncDiscordPromise, deleteDbPromise, deletePineconePromise]);
+
     revalidatePath('/dashboard');
     return { success: true };
   } catch (error) {
