@@ -10,3 +10,4 @@ venv/
 bot/events/
 scratch/
 *.drawio
+!docs/diagrama_despliegue_engram.drawio
