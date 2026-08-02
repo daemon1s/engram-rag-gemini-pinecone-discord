@@ -26,13 +26,13 @@ class GeminiClient:
                 print(f"Gemini API Retry {i+1}/{self.max_retries}: {delay}s wait")
                 await asyncio.sleep(delay)
 
-    async def get_embedding(self, text):
+    async def get_embedding(self, text, task_type='RETRIEVAL_DOCUMENT'):
         def call():
             result = self.client.models.embed_content(
                 model=self.embedding_model,
                 contents=text,
                 config={
-                    'task_type': 'RETRIEVAL_DOCUMENT',
+                    'task_type': task_type,
                     'output_dimensionality': 768
                 }
             )

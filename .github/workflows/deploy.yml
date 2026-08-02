@@ -54,7 +54,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
-          username: root
+          username: azureuser
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/engram-rag-gemini-pinecone-discord

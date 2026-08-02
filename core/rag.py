@@ -17,6 +17,9 @@ async def answer_with_rag(query):
     async with pool.acquire() as conn:
         rows = await conn.fetch(query_db, nota_ids)
         
+    if not rows:
+        return "⚠️ Las notas encontradas en la búsqueda semántica ya no existen en la base de datos (desincronización detectada). Por favor, ejecuta la sincronización de vectores."
+        
     context_parts = []
     for row in rows:
         fecha = row['created_at'].strftime('%Y-%m-%d %H:%M')
