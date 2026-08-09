@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Search, Clock, ArrowUpDown } from "lucide-react";
 import { motion } from "framer-motion";
 
-export function DashboardControls({ tags }: { tags: string[] }) {
+export function DashboardControls({ tags, basePath = "/dashboard" }: { tags: string[]; basePath?: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -19,11 +19,11 @@ export function DashboardControls({ tags }: { tags: string[] }) {
     if (sort !== 'newest') params.set('sort', sort);
 
     const timeout = setTimeout(() => {
-      router.push(`/dashboard?${params.toString()}`);
+      router.push(`${basePath}?${params.toString()}`);
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [query, tag, sort, router]);
+  }, [query, tag, sort, router, basePath]);
 
   return (
     <div className="flex w-full flex-col items-center gap-8">

@@ -8,7 +8,7 @@ import ReactMarkdown from "react-markdown";
 import { AnimatePresence } from "framer-motion";
 import { X, Maximize2 } from "lucide-react";
 
-export function NoteCard({ note }: { note: Note }) {
+export function NoteCard({ note, readOnly = false }: { note: Note; readOnly?: boolean }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(note.titulo);
@@ -150,22 +150,24 @@ export function NoteCard({ note }: { note: Note }) {
         )}
       </AnimatePresence>
 
-      <div className="flex items-center justify-between opacity-0 transition-all duration-300 group-hover:opacity-100">
-        <div className="h-px flex-1 bg-gradient-to-r from-blue-500/30 to-transparent" />
-        <div className="ml-4 flex gap-6">
-          {isEditing ? (
-            <>
-              <button onClick={handleSave} className="relative z-10 text-[10px] font-black tracking-widest text-blue-400 hover:text-blue-300 uppercase transition-colors">Guardar</button>
-              <button onClick={() => setIsEditing(false)} className="relative z-10 text-[10px] font-black tracking-widest text-slate-500 hover:text-slate-400 uppercase transition-colors">Cancelar</button>
-            </>
-          ) : (
-            <>
-              <button onClick={() => setIsEditing(true)} className="relative z-10 text-[10px] font-black tracking-widest text-blue-400 hover:text-blue-300 uppercase transition-colors">Editar</button>
-              <button onClick={handleDelete} className="relative z-10 text-[10px] font-black tracking-widest text-red-500/80 hover:text-red-400 uppercase transition-colors">Borrar</button>
-            </>
-          )}
+      {!readOnly && (
+        <div className="flex items-center justify-between opacity-0 transition-all duration-300 group-hover:opacity-100">
+          <div className="h-px flex-1 bg-gradient-to-r from-blue-500/30 to-transparent" />
+          <div className="ml-4 flex gap-6">
+            {isEditing ? (
+              <>
+                <button onClick={handleSave} className="relative z-10 text-[10px] font-black tracking-widest text-blue-400 hover:text-blue-300 uppercase transition-colors">Guardar</button>
+                <button onClick={() => setIsEditing(false)} className="relative z-10 text-[10px] font-black tracking-widest text-slate-500 hover:text-slate-400 uppercase transition-colors">Cancelar</button>
+              </>
+            ) : (
+              <>
+                <button onClick={() => setIsEditing(true)} className="relative z-10 text-[10px] font-black tracking-widest text-blue-400 hover:text-blue-300 uppercase transition-colors">Editar</button>
+                <button onClick={handleDelete} className="relative z-10 text-[10px] font-black tracking-widest text-red-500/80 hover:text-red-400 uppercase transition-colors">Borrar</button>
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </motion.div>
   );
 }
