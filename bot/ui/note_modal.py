@@ -8,7 +8,7 @@ class NoteModal(ui.Modal):
         self.nota_id = nota_id
 
         self.titulo_input = ui.TextInput(
-            label="Ttulo de la nota",
+            label="Título de la nota",
             placeholder="Un titulo descriptivo...",
             default=initial_title,
             min_length=3,
@@ -19,7 +19,7 @@ class NoteModal(ui.Modal):
         self.contenido_input = ui.TextInput(
             label="Contenido de la nota",
             style=discord.TextStyle.long,
-            placeholder="Escribe o pega aqu tu nota con formato Markdown...",
+            placeholder="Escribe o pega aquí tu nota con formato Markdown...",
             default=initial_content,
             min_length=1,
             max_length=4000

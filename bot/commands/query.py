@@ -1,23 +1,26 @@
 import discord
 from discord import app_commands
 from core.rag import answer_with_rag
+from core.search import get_context
+from bot.ui.embeds import build_query_embed
 from bot.ui.retry_view import RetryView
+
+ALLOWED_NONE = discord.AllowedMentions.none()
 
 async def setup_query_command(tree: app_commands.CommandTree):
     
     async def execute_query(interaction: discord.Interaction, pregunta: str):
         try:
             respuesta = await answer_with_rag(pregunta)
+
+            try:
+                contexto = await get_context(pregunta)
+                fuentes = [{"id": int(match.id), "tag": (match.metadata or {}).get("tag", "?")} for match in contexto.matches]
+            except Exception:
+                fuentes = []
             
-            if len(respuesta) > 4000:
-                respuesta = respuesta[:3900] + "\n\n*(Respuesta truncada por límites de longitud)*"
-            
-            embed = discord.Embed(
-                title=f"🔍 Consulta: {pregunta}",
-                description=respuesta,
-                color=0x3B82F6
-            )
-            await interaction.followup.send(embed=embed)
+            embed = build_query_embed(pregunta, respuesta, fuentes)
+            await interaction.followup.send(embed=embed, allowed_mentions=ALLOWED_NONE)
             
         except Exception as e:
             friendly_message = (
@@ -28,12 +31,11 @@ async def setup_query_command(tree: app_commands.CommandTree):
             print(f"Error en query: {str(e)}")
             
             view = RetryView(execute_query, pregunta)
-            error_msg = await interaction.followup.send(
+            await interaction.followup.send(
                 friendly_message, 
                 view=view, 
-                wait=True
+                ephemeral=True
             )
-            await error_msg.delete(delay=30)
 
     @tree.command(name="query", description="Consulta a engram (Búsqueda Semántica)")
     @app_commands.describe(pregunta="Lo que quieres saber basado en tus notas")
