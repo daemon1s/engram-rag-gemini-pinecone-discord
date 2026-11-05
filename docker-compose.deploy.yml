@@ -1,0 +1,34 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: db_engram
+      POSTGRES_USER: engram_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?falta DB_PASSWORD en .env}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+  engram_bot:
+    build: .
+    image: engram-bot:local
+    env_file: .env
+    depends_on:
+      - postgres
+    restart: always
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os; exit(0 if os.path.exists('/tmp/bot_ready') else 1)"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+  dashboard:
+    build: ./dashboard
+    image: engram-dashboard:local
+    ports:
+      - "127.0.0.1:3001:3000"
+    env_file: .env
+    depends_on:
+      - postgres
+    restart: always
+volumes:
+  postgres_data:
