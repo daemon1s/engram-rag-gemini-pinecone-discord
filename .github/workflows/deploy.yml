@@ -1,65 +1,64 @@
-name: Build and Deploy engram
+name: Deploy
+
+# Deploy simple al VPS Oracle (ARM64): el build se hace en el VPS.
+# Si el healthcheck falla, vuelve al commit anterior automaticamente.
+# Por ahora solo manual. Para deploy en cada push, agregar:
+#   push:
+#     branches: [main]
+on:
+  workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: deploy-engram
+  cancel-in-progress: false
 
-on:
-  push:
-    branches: [ main ]
-    paths:
-      - 'bot/**'
-      - 'core/**'
-      - 'db/**'
-      - 'services/**'
-      - 'dashboard/**'
-      - 'docker-compose.yml'
-      - 'Dockerfile'
-      - 'requirements.txt'
-      - '.github/workflows/**'
-  workflow_dispatch: 
+permissions:
+  contents: read
+
+env:
+  APP_DIR: /home/ubuntu/apps/engram-rag-gemini-pinecone-discord
+  COMPOSE_FILE: docker-compose.deploy.yml
+  HEALTH_URLS: "http://127.0.0.1:3001/"
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push Bot
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USER }}/engram-bot:latest
-
-      - name: Build and push Dashboard
-        uses: docker/build-push-action@v5
-        with:
-          context: ./dashboard
-          push: true
-          tags: ${{ secrets.DOCKER_USER }}/engram-dashboard:latest
-
   deploy:
-    needs: build-and-push
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     steps:
-      - name: Deploy via SSH
+      - name: Deploy con rollback
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
-          username: azureuser
+          username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          envs: APP_DIR,COMPOSE_FILE,HEALTH_URLS
           script: |
-            cd ~/engram-rag-gemini-pinecone-discord
-            git fetch --all
+            set -u
+            cd "$APP_DIR"
+
+            healthy() {
+              for i in $(seq 1 30); do
+                ok=1
+                for u in $HEALTH_URLS; do curl -fs -o /dev/null "$u" || ok=0; done
+                [ "$ok" = 1 ] && return 0
+                sleep 2
+              done
+              return 1
+            }
+
+            prev=$(git rev-parse HEAD)
+            git fetch origin main
             git reset --hard origin/main
-            docker compose pull
-            docker compose up -d --wait
-            docker image prune -f
+            echo "deploy: $prev -> $(git rev-parse HEAD)"
+
+            if docker compose -f "$COMPOSE_FILE" up -d --build && healthy; then
+              docker image prune -f
+              echo "OK"
+              exit 0
+            fi
+
+            echo "FALLO. Rollback a $prev"
+            git reset --hard "$prev"
+            docker compose -f "$COMPOSE_FILE" up -d --build
+            healthy && echo "rollback OK" || echo "rollback tambien fallo, revisar a mano"
+            exit 1
