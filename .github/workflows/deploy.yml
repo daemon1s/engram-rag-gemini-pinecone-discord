@@ -2,10 +2,10 @@ name: Deploy
 
 # Deploy simple al VPS Oracle (ARM64): el build se hace en el VPS.
 # Si el healthcheck falla, vuelve al commit anterior automaticamente.
-# Por ahora solo manual. Para deploy en cada push, agregar:
-#   push:
-#     branches: [main]
+# Se despliega en cada push a main, o a mano desde Actions.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 concurrency:
