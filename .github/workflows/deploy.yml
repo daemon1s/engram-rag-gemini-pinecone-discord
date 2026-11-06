@@ -37,7 +37,7 @@ jobs:
             cd "$APP_DIR"
 
             healthy() {
-              for i in $(seq 1 30); do
+              for i in $(seq 1 60); do
                 ok=1
                 for u in $HEALTH_URLS; do curl -fs -o /dev/null "$u" || ok=0; done
                 [ "$ok" = 1 ] && return 0
